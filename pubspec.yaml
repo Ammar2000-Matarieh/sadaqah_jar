@@ -22,6 +22,7 @@ dependencies:
   permission_handler: ^12.0.3
   timezone: ^0.11.1
   intl: ^0.20.3
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

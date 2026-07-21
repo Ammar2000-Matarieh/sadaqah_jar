@@ -13,6 +13,7 @@ class PrayerTimesScreen extends StatefulWidget {
 }
 
 class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
+  String title = "مواقيت الصلاة";
   PrayerTimes? prayerTimes;
   final player = AudioPlayer();
   bool isPlaying = false;
@@ -75,15 +76,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text(
-          "مواقيت الصلاة",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-      ),
+
       body: prayerTimes == null
           ? const Center(child: CircularProgressIndicator())
           : Padding(

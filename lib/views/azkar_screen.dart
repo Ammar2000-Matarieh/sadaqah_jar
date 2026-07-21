@@ -22,15 +22,7 @@ class _AzkarPageState extends State<AzkarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8F7),
-      appBar: AppBar(
-        title: const Text(
-          'المسبحة الإلكترونية',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: const Color(0xFF0F4C43),
-        centerTitle: true,
-        elevation: 0,
-      ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

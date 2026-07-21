@@ -13,28 +13,7 @@ class QuranPage extends StatelessWidget {
     });
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8F7),
-      appBar: AppBar(
-        title: const Text(
-          'القرآن الكريم',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 20,
-          ),
-        ),
-        backgroundColor: const Color(0xFF0F4C43),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF0F4C43), Color(0xFF18665B)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-      ),
+
       body: Consumer<QuranController>(
         builder: (context, value, child) {
           if (value.isLoading) {

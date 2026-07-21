@@ -114,28 +114,7 @@ class _HadithPageState extends State<HadithPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8F7),
-      appBar: AppBar(
-        title: const Text(
-          'الأحاديث النبوية المأثورة',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 19,
-          ),
-        ),
-        backgroundColor: const Color(0xFF0F4C43),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF0F4C43), Color(0xFF18665B)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-      ),
+
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         itemCount: localHadiths.length,
