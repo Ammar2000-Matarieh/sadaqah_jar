@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
+import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/list_of_providers.dart';
 import 'package:sadqah_jariyah_app/splash_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -42,10 +43,10 @@ class ReligiousApp extends StatelessWidget {
         title: 'صدقة جارية',
         theme: ThemeData(
           useMaterial3: true,
-          primaryColor: const Color(0xFF0F4C43),
+          primaryColor: AppColors.primaryColor,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF0F4C43),
-            primary: const Color(0xFF0F4C43),
+            seedColor: AppColors.primaryColor,
+            primary: AppColors.primaryColor,
             secondary: const Color(0xFFDFB15B),
             background: const Color(0xFFF6F8F7),
           ),
@@ -140,7 +141,7 @@ class _SurahDetailsPageState extends State<SurahDetailsPage> {
               color: Colors.white,
             ),
           ),
-          backgroundColor: const Color(0xFF0F4C43),
+          backgroundColor: AppColors.primaryColor, //F4A804
           centerTitle: true,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -153,7 +154,7 @@ class _SurahDetailsPageState extends State<SurahDetailsPage> {
                     isPlaying
                         ? Icons.pause_circle_filled_rounded
                         : Icons.play_circle_fill_rounded,
-                    color: const Color(0xFFDFB15B),
+                    color: const Color(0xFFF4A804),
                     size: 30,
                   ),
                   onPressed: toggleAudio,

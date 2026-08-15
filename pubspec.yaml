@@ -23,6 +23,8 @@ dependencies:
   timezone: ^0.11.1
   intl: ^0.20.3
   url_launcher: ^6.3.2
+  rename: ^3.1.0
+  animated_text_kit: ^4.3.0
 
 dev_dependencies:
   flutter_test:
@@ -32,11 +34,12 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons_islamic.png"
+  image_path: "assets/images/logo_mutqan.jpeg"
   adaptive_icon_background: "#0D4D43"
-  adaptive_icon_foreground: "assets/icons_islamic.png"
+  adaptive_icon_foreground: "assets/images/logo_mutqan.jpeg"
 
 flutter:
   uses-material-design: true
   assets:
     - assets/audio/azan12.mp3
+    - assets/images/logo_mutqan.jpeg

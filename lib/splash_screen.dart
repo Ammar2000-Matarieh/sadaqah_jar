@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/views/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,21 +13,42 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _logoScaleAnimation;
+  late Animation<double> _logoFadeAnimation;
+
+  static const Duration _splashDuration = Duration(seconds: 5);
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 1400),
     );
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    _logoScaleAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOutBack),
+      ),
+    );
+    _logoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+      ),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(_splashDuration, () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -47,91 +70,116 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF072E28), Color(0xFF13584E)],
+            colors: [AppColors.primaryColor, AppColors.primaryColor],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.07),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFDFB15B).withValues(alpha: 0.3),
-                        width: 1.5,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ScaleTransition(
+                  scale: _logoScaleAnimation,
+                  child: FadeTransition(
+                    opacity: _logoFadeAnimation,
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFDFB15B).withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(
+                              0xFFDFB15B,
+                            ).withValues(alpha: 0.15),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo_mutqan.jpeg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.auto_stories_outlined,
-                      size: 80,
-                      color: Color(0xFFDFB15B),
-                    ),
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    'التطبيق الديني المتكامل',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFF6F8F7),
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Container(
-                    width: 60,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDFB15B),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  const SizedBox(height: 35),
-                  Text(
-                    'صَدَقَة جَارِيَة عَن رُوح المَرحُومَة بِإِذنِ الله تعالى',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'جليلة موسى زيدان',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 8,
-                          color: Colors.black45,
-                          offset: Offset(0, 3),
+                ),
+                const SizedBox(height: 30),
+
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Column(
+                    children: [
+                      const Text(
+                        'التطبيق الديني المتكامل',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFF6F8F7),
+                          letterSpacing: 0.5,
                         ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 15),
+                      Container(
+                        width: 60,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFDFB15B),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        height: 30,
+                        child: AnimatedTextKit(
+                          isRepeatingAnimation: false,
+                          animatedTexts: [
+                            TypewriterAnimatedText(
+                              'لأن الاتقان في العبادة يبدأ بخطوة',
+                              textAlign: TextAlign.center,
+                              textStyle: TextStyle(
+                                fontSize: 21,
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontWeight: FontWeight.w500,
+                              ),
+                              speed: const Duration(milliseconds: 60),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        height: 30,
+                        child: AnimatedTextKit(
+                          isRepeatingAnimation: false,
+                          animatedTexts: [
+                            TypewriterAnimatedText(
+                              'صَدَقَة جَارِيَة عَن أرُواح المَسلمين والمسلمات بِإِذنِ الله تعالى',
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white.withValues(alpha: 0.7),
+                              ),
+                              textAlign: TextAlign.center,
+                              speed: const Duration(milliseconds: 60),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 15),
-                  Text(
-                    'غفر الله لها وثبّتها وأسكنها فسيح جناته',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: const Color(0xFFDFB15B).withValues(alpha: 0.8),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
