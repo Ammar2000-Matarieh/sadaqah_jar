@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 
 class HadithPage extends StatefulWidget {
   const HadithPage({super.key});
@@ -113,7 +114,7 @@ class _HadithPageState extends State<HadithPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8F7),
+      backgroundColor: AppColors.whiteColor,
 
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

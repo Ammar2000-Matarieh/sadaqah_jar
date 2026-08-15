@@ -17,7 +17,7 @@ class BottomNavController extends ChangeNotifier {
   ];
 
   final List<Widget> screens = [
-    const QuranPage(),
+    const QuranScreen(),
     const HadithPage(),
     const AzkarScreen(),
     const PrayerTimesScreen(),

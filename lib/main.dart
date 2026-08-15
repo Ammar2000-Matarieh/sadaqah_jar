@@ -48,7 +48,6 @@ class ReligiousApp extends StatelessWidget {
             seedColor: AppColors.primaryColor,
             primary: AppColors.primaryColor,
             secondary: const Color(0xFFDFB15B),
-            background: const Color(0xFFF6F8F7),
           ),
           fontFamily: 'Cairo',
         ),
@@ -130,9 +129,7 @@ class _SurahDetailsPageState extends State<SurahDetailsPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(
-          0xFFFFFDF9,
-        ), // لون بيج خفيف مريح جداً لقراءة القرآن
+        backgroundColor: const Color(0xFFFFFDF9),
         appBar: AppBar(
           title: Text(
             widget.surahName,

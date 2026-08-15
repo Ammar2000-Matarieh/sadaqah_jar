@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8F7),
+      backgroundColor: AppColors.whiteColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),

@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/bottom_nav_controller.dart';
-import 'package:sadqah_jariyah_app/views/khitma_screen.dart';
 
 class MainHomeScreen extends StatelessWidget {
   const MainHomeScreen({super.key});
@@ -92,21 +90,7 @@ class MainHomeScreen extends StatelessWidget {
                     context.read<BottomNavController>().changeNavIndex(1);
                   },
                 ),
-                ListTile(
-                  leading: const Icon(Icons.volunteer_activism_outlined),
-                  title: const Text('الختمات'),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoDialogRoute(
-                        builder: (context) => KhatmaScreen(
-                          khatmaId: '1',
-                          repository: MockKhatmaRepository(),
-                        ),
-                        context: context,
-                      ),
-                    );
-                  },
-                ),
+
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.share),
@@ -151,25 +135,25 @@ class MainHomeScreen extends StatelessWidget {
                 selectedIndex: value.currentIndex,
                 onDestinationSelected: (index) => value.changeNavIndex(index),
                 backgroundColor: Colors.white,
-                indicatorColor: const Color(0xFF0F4C43).withValues(alpha: 0.12),
+                indicatorColor: AppColors.primaryColor.withValues(alpha: 0.12),
                 height: 70,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
                 destinations: const [
                   NavigationDestination(
                     icon: Icon(
                       Icons.menu_book_outlined,
-                      color: Color(0xFF556B67),
+                      color: AppColors.primaryColor,
                     ),
                     selectedIcon: Icon(
                       Icons.menu_book_rounded,
-                      color: Color(0xFF0F4C43),
+                      color: AppColors.primaryColor,
                     ),
                     label: 'القرآن',
                   ),
                   NavigationDestination(
                     icon: Icon(
                       Icons.auto_stories_outlined,
-                      color: Color(0xFF556B67),
+                      color: AppColors.primaryColor,
                     ),
                     selectedIcon: Icon(
                       Icons.auto_stories_rounded,
@@ -180,33 +164,33 @@ class MainHomeScreen extends StatelessWidget {
                   NavigationDestination(
                     icon: Icon(
                       Icons.touch_app_outlined,
-                      color: Color(0xFF556B67),
+                      color: AppColors.primaryColor,
                     ),
                     selectedIcon: Icon(
                       Icons.touch_app,
-                      color: Color(0xFF0F4C43),
+                      color: AppColors.primaryColor,
                     ),
                     label: 'المسبحة',
                   ),
                   NavigationDestination(
                     icon: Icon(
                       Icons.access_time_outlined,
-                      color: Color(0xFF556B67),
+                      color: AppColors.primaryColor,
                     ),
                     selectedIcon: Icon(
                       Icons.access_time_filled,
-                      color: Color(0xFF0F4C43),
+                      color: AppColors.primaryColor,
                     ),
                     label: 'الصلاة',
                   ),
                   NavigationDestination(
                     icon: Icon(
                       Icons.info_outline_rounded,
-                      color: Color(0xFF556B67),
+                      color: AppColors.primaryColor,
                     ),
                     selectedIcon: Icon(
                       Icons.info_rounded,
-                      color: Color(0xFF0F4C43),
+                      color: AppColors.primaryColor,
                     ),
                     label: 'عن التطبيق',
                   ),

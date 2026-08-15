@@ -124,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen>
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFF6F8F7),
+                          color: AppColors.whiteColor,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -152,25 +152,6 @@ class _SplashScreenState extends State<SplashScreen>
                                 color: Colors.white.withValues(alpha: 0.8),
                                 fontWeight: FontWeight.w500,
                               ),
-                              speed: const Duration(milliseconds: 60),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        height: 30,
-                        child: AnimatedTextKit(
-                          isRepeatingAnimation: false,
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              'صَدَقَة جَارِيَة عَن أرُواح المَسلمين والمسلمات بِإِذنِ الله تعالى',
-                              textStyle: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white.withValues(alpha: 0.7),
-                              ),
-                              textAlign: TextAlign.center,
                               speed: const Duration(milliseconds: 60),
                             ),
                           ],

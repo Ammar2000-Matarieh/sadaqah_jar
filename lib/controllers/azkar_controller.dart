@@ -12,7 +12,17 @@ class AzkarController extends ChangeNotifier {
     "الحمد لله رب العالمين",
   ];
 
-  void azkarIndexCalculate(int zikrIndex) {
+  void incrementCounter() {
+    counter++;
+    notifyListeners();
+  }
+
+  void resetCounter() {
+    counter = 0;
+    notifyListeners();
+  }
+
+  void azkarIndexCalculate() {
     zikrIndex = (zikrIndex + 1) % azkarList.length;
     counter = 0;
     notifyListeners();

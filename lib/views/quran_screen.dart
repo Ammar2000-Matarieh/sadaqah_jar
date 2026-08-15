@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
 import 'package:sadqah_jariyah_app/main.dart';
 
-class QuranPage extends StatelessWidget {
-  const QuranPage({super.key});
+class QuranScreen extends StatelessWidget {
+  const QuranScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class QuranPage extends StatelessWidget {
       Provider.of<QuranController>(context, listen: false).getSurahs();
     });
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8F7),
+      backgroundColor: AppColors.whiteColor,
 
       body: Consumer<QuranController>(
         builder: (context, value, child) {
@@ -98,7 +99,7 @@ class QuranPage extends StatelessWidget {
                       trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
                         size: 14,
-                        color: Color(0xFF0F4C43),
+                        color: Colors.black,
                       ),
                     ),
                   ),
