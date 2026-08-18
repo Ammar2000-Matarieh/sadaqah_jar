@@ -1,185 +1,125 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/controllers/hadith_controller.dart';
 
-class HadithPage extends StatefulWidget {
-  const HadithPage({super.key});
-  @override
-  State<HadithPage> createState() => _HadithPageState();
-}
-
-class _HadithPageState extends State<HadithPage> {
-  final List<Map<String, String>> localHadiths = const [
-    {
-      "id": "1",
-      "text":
-          "عَنْ أَمِيرِ الْمُؤْمِنِينَ أَبِي حَفْصٍ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللهُ عَنْهُ قَالَ: سَمِعْت رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَقُولُ: «إنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى...» [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "2",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «مَنْ دَعَا إِلَى هُدًى كَانَ لَهُ مِنَ الأَجْرِ مِثْلُ أُجُورِ مَنْ تَبِعَهُ لاَ يَنْقُصُ ذَلِكَ مِنْ أُجُورِهِمْ شَيْئًا...» [رواه مسلم]",
-    },
-    {
-      "id": "3",
-      "text":
-          "عَنْ أَبِي عَبْدِ الرَّحْمَنِ عَبْدِ اللَّهِ بْنِ عُمَرَ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: سَمِعْت رَسُولَ اللَّهِ يَقُولُ: «بُنِيَ الْإِسْلَامُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لَا إلَهَ إلَّا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلَاةِ، وَإِيتَاءِ الزَّكَاةِ...» [رواه البخاري]",
-    },
-    {
-      "id": "4",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ». [حديث حسن رواه الترمذي]",
-    },
-    {
-      "id": "5",
-      "text":
-          "عَنْ أَنَسِ بْنِ مَالِكٍ رَضِيَ اللَّهُ عَنْهُ عَنِ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبَّ لِنَفْسِهِ». [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "6",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ...» [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "7",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَجُلًا قَالَ لِلنَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: أَوْصِنِي. قَالَ: «لَا تَغْضَبْ». فَرَدَّدَ مِرَارًا، قَالَ: «لَا تَغْضَبْ». [رواه البخاري]",
-    },
-    {
-      "id": "8",
-      "text":
-          "عَنْ أَبِي يَعْلَى شَدَّادِ بْنِ أَوْسٍ رَضِيَ اللَّهُ عَنْهُ عَنْ رَسُولِ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «إنَّ اللَّهَ كَتَبَ الْإِحْسَانَ عَلَى كُلِّ شَيْءٍ...» [رواه مسلم]",
-    },
-    {
-      "id": "9",
-      "text":
-          "عَنْ أَبِي ذَرٍّ جُنْدُبْ بْنِ جُنَادَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ لِي رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «اتَّقِ اللَّهِ حَيْثُمَا كُنْتَ، وَأَتْبِعْ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ». [رواه الترمذي]",
-    },
-    {
-      "id": "10",
-      "text":
-          "عَنْ عَبْدِ اللَّهِ بْنِ عَبَّاسٍ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: كُنْت خَلْفَ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَوْمًا، فَقَالَ: «يَا غُلَامُ! إنِّي أُعَلِّمُكَ كَلِمَاتٍ: احْفَظْ اللَّهَ يَحْفَظْكَ...» [رواه الترمذي]",
-    },
-    {
-      "id": "11",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ». [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "12",
-      "text":
-          "عَنْ أَبِي مُوسَى الأَشْعَرِيِّ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «مَثَلُ الَّذِي يَذْكُرُ رَبَّهُ وَالَّذِي لا يَذْكُرُ رَبَّهُ مَثَلُ الْحَيِّ وَالْمَيِّتِ». [رواه البخاري]",
-    },
-    {
-      "id": "13",
-      "text":
-          "عَنْ سَعْدِ بْنِ أَبِي وَقَّاصٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «إِنَّكَ لَنْ تُنْفِقَ نَفَقَةً تَبْتَغِي بِهَا وَجْهَ اللَّهِ إِلَّا أُجِرْتَ عَلَيْهَا...» [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "14",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ عَنِ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «السَّاعِي عَلَى الأَرْمَلَةِ وَالمِسْكِينِ، كَالْمُجَاهِدِ فِي سَبِيلِ اللَّهِ...» [رواه البخاري ومسلم]",
-    },
-    {
-      "id": "15",
-      "text":
-          "عَنْ جَابِرِ بْنِ عَبْدِ اللَّهِ رَضِيَ اللَّهُ عَنْهُمَا أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «رَحِمَ اللَّهُ رَجُلًا سَمْحًا إِذَا بَاعَ، وَإِذَا اشْتَرَى، وَإِذَا اقْتَضَى». [رواه البخاري]",
-    },
-    {
-      "id": "16",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «آيَةُ المُنَافِقِ ثَلَاثٌ: إِذَا حَدَّثَ كَذَبَ، وَإِذَا وَعَدَ أَخْلَفَ، وَإِذَا اؤْتُمِنَ خَانَ». [رواه البخاري]",
-    },
-    {
-      "id": "17",
-      "text":
-          "عَنْ عُثْمَانَ بْنِ عَفَّانَ رَضِيَ اللَّهُ عَنْهُ عَنِ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «خَيْرُكُمْ مَنْ تَعَلَّمَ القُرْآنَ وَعَلَّمَهُ». [رواه البخاري]",
-    },
-    {
-      "id": "18",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ، وَمَا زَادَ اللَّهُ عَبْدًا بِعَفْوٍ إِلَّا عِزًّا...» [رواه مسلم]",
-    },
-    {
-      "id": "19",
-      "text":
-          "عَنْ عَبْدِ اللَّهِ بْنِ مَسْعُودٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: «عَلَيْكُمْ بِالصِّدْقِ فَإِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ...» [رواه مسلم]",
-    },
-    {
-      "id": "20",
-      "text":
-          "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: «إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلَاثَةٍ: إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ». [رواه مسلم]",
-    },
-  ];
+class HadithScreen extends StatelessWidget {
+  const HadithScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HadithController>(context, listen: false).getHadiths();
+    });
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+      body: Consumer<HadithController>(
+        builder: (context, value, child) {
+          if (value.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            );
+          }
 
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        itemCount: localHadiths.length,
-        itemBuilder: (context, index) {
-          final hadith = localHadiths[index];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.02),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-              border: Border.all(
-                color: const Color(0xFF0F4C43).withValues(alpha: 0.04),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
+          if (value.hasError) {
+            return Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    hadith['text']!,
-                    style: const TextStyle(
-                      fontSize: 15.5,
-                      height: 1.75,
-                      color: Color(0xFF334155),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.justify,
+                  const Icon(
+                    Icons.wifi_off_rounded,
+                    size: 42,
+                    color: Colors.grey,
                   ),
-                  const SizedBox(height: 14),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(
-                            0xFFDFB15B,
-                          ).withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          'حديث رقم: ${hadith['id']}',
-                          style: const TextStyle(
-                            color: Color(0xFFB48425),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 12),
+                  const Text(
+                    'تعذر تحميل الأحاديث',
+                    style: TextStyle(color: Color(0xFF334155), fontSize: 15),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => value.getHadiths(),
+                    child: const Text(
+                      'إعادة المحاولة',
+                      style: TextStyle(color: AppColors.primaryColor),
+                    ),
                   ),
                 ],
               ),
+            );
+          }
+
+          return RefreshIndicator(
+            color: AppColors.primaryColor,
+            onRefresh: value.getHadiths,
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              itemCount: value.hadiths.length,
+              itemBuilder: (context, index) {
+                final hadith = value.hadiths[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.02),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: AppColors.primaryColor.withValues(alpha: 0.04),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          hadith['text']!,
+                          style: const TextStyle(
+                            fontSize: 15.5,
+                            height: 1.75,
+                            color: Color(0xFF334155),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.justify,
+                        ),
+                        const SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(
+                                  0xFFDFB15B,
+                                ).withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                'حديث رقم: ${hadith['id']}',
+                                style: const TextStyle(
+                                  color: Color(0xFFB48425),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           );
         },

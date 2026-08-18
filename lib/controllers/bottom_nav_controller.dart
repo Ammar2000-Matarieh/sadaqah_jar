@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/views/about_screen.dart';
+import 'package:sadqah_jariyah_app/views/azkar.dart';
 import 'package:sadqah_jariyah_app/views/azkar_screen.dart';
 import 'package:sadqah_jariyah_app/views/hadith.dart';
 import 'package:sadqah_jariyah_app/views/prayer_times_screen.dart';
@@ -13,15 +14,15 @@ class BottomNavController extends ChangeNotifier {
     'الأحاديث النبوية',
     'المسبحة الإلكترونية',
     'مواقيت الصلاة',
-    'عن التطبيق',
+    'الاذكار',
   ];
 
   final List<Widget> screens = [
     const QuranScreen(),
-    const HadithPage(),
+    const HadithScreen(),
     const AzkarScreen(),
     const PrayerTimesScreen(),
-    const AboutPage(),
+    const AzkarScreenNew(),
   ];
 
   void changeNavIndex(int index) {

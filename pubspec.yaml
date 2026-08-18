@@ -25,6 +25,8 @@ dependencies:
   url_launcher: ^6.3.2
   rename: ^3.1.0
   animated_text_kit: ^4.3.0
+  shared_preferences: ^2.5.5
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:
@@ -35,7 +37,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/logo_mutqan.jpeg"
-  adaptive_icon_background: "#0D4D43"
+  adaptive_icon_background: "#11A6F9"
   adaptive_icon_foreground: "assets/images/logo_mutqan.jpeg"
 
 flutter:

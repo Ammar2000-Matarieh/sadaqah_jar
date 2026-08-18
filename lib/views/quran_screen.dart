@@ -11,15 +11,15 @@ class QuranScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<QuranController>(context, listen: false).getSurahs();
+      Provider.of<QuranController>(context, listen: false).getReciters();
     });
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-
       body: Consumer<QuranController>(
         builder: (context, value, child) {
           if (value.isLoading) {
             return Center(
-              child: CircularProgressIndicator(color: Color(0xFF0F4C43)),
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
             );
           }
           return ListView.builder(
@@ -57,21 +57,19 @@ class QuranScreen extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: const Color(
-                            0xFF0F4C43,
-                          ).withValues(alpha: 0.08),
+                          color: AppColors.primaryColor.withValues(alpha: 0.08),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(
-                              0xFF0F4C43,
-                            ).withValues(alpha: 0.15),
+                            color: AppColors.primaryColor.withValues(
+                              alpha: 0.15,
+                            ),
                           ),
                         ),
                         child: Center(
                           child: Text(
                             '${surah['number']}',
                             style: const TextStyle(
-                              color: Color(0xFF0F4C43),
+                              color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
@@ -83,7 +81,7 @@ class QuranScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Color(0xFF1E293B),
+                          color: AppColors.primaryColor,
                         ),
                       ),
                       subtitle: Padding(
@@ -109,6 +107,98 @@ class QuranScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  void _showReciterSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => const ReciterBottomSheet(),
+    );
+  }
+}
+
+class ReciterBottomSheet extends StatelessWidget {
+  const ReciterBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.85,
+      expand: false,
+      builder: (context, scrollController) {
+        return Consumer<QuranController>(
+          builder: (context, controller, _) {
+            if (controller.isRecitersLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.reciters.isEmpty) {
+              return const Center(child: Text('تعذر تحميل قائمة القراء'));
+            }
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'اختر القارئ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView.separated(
+                    controller: scrollController,
+                    itemCount: controller.reciters.length,
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final reciter = controller.reciters[index];
+                      final identifier = reciter['identifier'];
+                      final isSelected =
+                          controller.selectedReciter == identifier;
+
+                      return ListTile(
+                        title: Text(
+                          reciter['name'] ?? '',
+                          style: TextStyle(
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? const Color(0xFF0F4C43)
+                                : Colors.black87,
+                          ),
+                        ),
+                        trailing: isSelected
+                            ? const Icon(
+                                Icons.check_circle,
+                                color: Color(0xFF0F4C43),
+                              )
+                            : null,
+                        onTap: () {
+                          controller.setReciter(identifier);
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -81,7 +81,7 @@ class AzkarScreen extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF0F4C43).withValues(alpha: 0.3),
+                        color: AppColors.primaryColor.withValues(alpha: 0.3),
                         blurRadius: 25,
                         offset: const Offset(0, 12),
                       ),
