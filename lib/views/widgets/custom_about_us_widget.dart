@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/extensions/size.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_item_widget.dart';
 
 class CustomAboutUsWidget extends StatelessWidget {
@@ -12,18 +13,18 @@ class CustomAboutUsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            SizedBox(height: 2.h),
 
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              // width: ,
+              padding: EdgeInsets.all(4.r),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(6.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 15,
+                    blurRadius: 3.r,
                     offset: const Offset(0, 6),
                   ),
                 ],
@@ -31,7 +32,7 @@ class CustomAboutUsWidget extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(4.r),
                     decoration: BoxDecoration(
                       color: AppColors.secColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
@@ -39,7 +40,7 @@ class CustomAboutUsWidget extends StatelessWidget {
                     child: const Icon(
                       Icons.mosque_rounded,
                       size: 60,
-                      color: Color(0xFFB48425),
+                      color: AppColors.goldColor,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -101,7 +102,7 @@ class CustomAboutUsWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFB48425),
+                  color: AppColors.goldColor,
                   height: 1.9,
                 ),
                 textAlign: TextAlign.center,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/controllers/splash_controller.dart';
 import 'package:sadqah_jariyah_app/views/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,56 +12,63 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _logoScaleAnimation;
-  late Animation<double> _logoFadeAnimation;
-
-  static const Duration _splashDuration = Duration(seconds: 5);
+  late final SplashController _controller;
+  late final AnimationController _animationController;
+  late final Animation<double> _logoScaleAnimation;
+  late final Animation<double> _logoFadeAnimation;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _controller = SplashController()
+      ..addListener(_onStatusChanged)
+      ..initialize();
+
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     );
 
     _logoScaleAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _animationController,
         curve: const Interval(0.0, 0.7, curve: Curves.easeOutBack),
       ),
     );
     _logoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _animationController,
         curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
       ),
     );
-
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _animationController,
         curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
       ),
     );
 
-    _controller.forward();
+    _animationController.forward();
+  }
 
-    Future.delayed(_splashDuration, () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainHomeScreen()),
-        );
-      }
-    });
+  void _onStatusChanged() {
+    if (!mounted) return;
+    if (_controller.status == SplashStatus.ready ||
+        _controller.status == SplashStatus.error) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainHomeScreen()),
+      );
+    }
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onStatusChanged);
     _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 

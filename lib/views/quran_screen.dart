@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
+import 'package:sadqah_jariyah_app/extensions/size.dart';
 import 'package:sadqah_jariyah_app/main.dart';
 import 'package:sadqah_jariyah_app/views/widgets/reciter_bottom_widget.dart';
 
@@ -43,8 +44,8 @@ class QuranScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SurahDetailsPage(
-                            surahNumber: surah['number'],
-                            surahName: surah['name'],
+                            surahNumber: surah.number,
+                            surahName: surah.name,
                           ),
                         ),
                       );
@@ -55,8 +56,8 @@ class QuranScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       leading: Container(
-                        width: 44,
-                        height: 44,
+                        width: 10.w,
+                        height: 7.h,
                         decoration: BoxDecoration(
                           color: AppColors.primaryColor.withValues(alpha: 0.08),
                           shape: BoxShape.circle,
@@ -68,7 +69,7 @@ class QuranScreen extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${surah['number']}',
+                            '${surah.number}',
                             style: const TextStyle(
                               color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
@@ -78,7 +79,7 @@ class QuranScreen extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        surah['name'],
+                        surah.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -86,9 +87,9 @@ class QuranScreen extends StatelessWidget {
                         ),
                       ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 4),
+                        padding: EdgeInsets.only(top: 1.h),
                         child: Text(
-                          'آياتها: ${surah['numberOfAyahs']}  •  ${surah['revelationType'] == 'Meccan' ? 'مكية' : 'مدنية'}',
+                          'آياتها: ${surah.numberOfAyahs}  •  ${surah.revelationType == 'Meccan' ? 'مكية' : 'مدنية'}',
                           style: TextStyle(
                             color: Colors.grey.shade500,
                             fontSize: 12,

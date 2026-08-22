@@ -107,7 +107,7 @@ class HadithScreen extends StatelessWidget {
                               child: Text(
                                 'حديث رقم: ${hadith['id']}',
                                 style: const TextStyle(
-                                  color: Color(0xFFB48425),
+                                  color: AppColors.goldColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 ),

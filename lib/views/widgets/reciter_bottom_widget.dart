@@ -45,13 +45,13 @@ class ReciterBottomSheet extends StatelessWidget {
                     separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final reciter = controller.reciters[index];
-                      final identifier = reciter['identifier'];
+                      final identifier = reciter.identifier;
                       final isSelected =
                           controller.selectedReciter == identifier;
 
                       return ListTile(
                         title: Text(
-                          reciter['name'] ?? '',
+                          reciter.name ?? '',
                           style: TextStyle(
                             fontWeight: isSelected
                                 ? FontWeight.bold

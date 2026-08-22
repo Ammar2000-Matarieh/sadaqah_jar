@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/api/custom_api_services.dart';
+import 'package:sadqah_jariyah_app/model/reciter.dart';
+import 'package:sadqah_jariyah_app/model/surah.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranController extends ChangeNotifier {
   final CustomApiServices _service = CustomApiServices();
   static const String _reciterPrefsKey = 'selected_reciter';
 
-  List<dynamic> _surahs = [];
-  List<dynamic> _reciters = [];
+  List<Surah> _surahs = []; // بدل List<dynamic>
+  List<Reciter> _reciters = [];
+
+  // List<dynamic> _surahs = [];
+  // List<dynamic> _reciters = [];
   String _selectedReciter = 'ar.alafasy';
   bool _isLoading = false;
   bool _isRecitersLoading = false;
   String? _recitersError;
 
-  List<dynamic> get surahs => _surahs;
-  List<dynamic> get reciters => _reciters;
+  List<Surah> get surahs => _surahs;
+  List<Reciter> get reciters => _reciters;
   String get selectedReciter => _selectedReciter;
   bool get isLoading => _isLoading;
   bool get isRecitersLoading => _isRecitersLoading;
