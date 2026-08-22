@@ -181,7 +181,7 @@ class CustomDrawerApp extends StatelessWidget {
                   _DrawerItem(
                     icon: Icons.info_rounded,
                     label: 'عن التطبيق',
-                    onTap: () => _pushPage(context, const AboutPage()),
+                    onTap: () => _pushPage(context, const AboutScreen()),
                   ),
                 ],
               ),

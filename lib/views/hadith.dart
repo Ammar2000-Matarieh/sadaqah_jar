@@ -99,9 +99,9 @@ class HadithScreen extends StatelessWidget {
                                 vertical: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(
-                                  0xFFDFB15B,
-                                ).withValues(alpha: 0.15),
+                                color: AppColors.secColor.withValues(
+                                  alpha: 0.15,
+                                ),
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: Text(

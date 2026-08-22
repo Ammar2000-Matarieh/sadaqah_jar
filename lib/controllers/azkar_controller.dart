@@ -12,13 +12,20 @@ class AzkarController extends ChangeNotifier {
     "الحمد لله رب العالمين",
   ];
 
-  void incrementCounter() {
-    counter++;
+  late List<int> counters = List.filled(azkarList.length, 0);
+
+  void incrementCounter(int index) {
+    counters[index]++;
     notifyListeners();
   }
 
-  void resetCounter() {
-    counter = 0;
+  void resetCounter(int index) {
+    counters[index] = 0;
+    notifyListeners();
+  }
+
+  void resetAll() {
+    counters = List.filled(azkarList.length, 0);
     notifyListeners();
   }
 

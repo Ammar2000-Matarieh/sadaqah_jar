@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
 import 'package:sadqah_jariyah_app/main.dart';
+import 'package:sadqah_jariyah_app/views/widgets/reciter_bottom_widget.dart';
 
 class QuranScreen extends StatelessWidget {
   const QuranScreen({super.key});
@@ -118,87 +119,6 @@ class QuranScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => const ReciterBottomSheet(),
-    );
-  }
-}
-
-class ReciterBottomSheet extends StatelessWidget {
-  const ReciterBottomSheet({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.85,
-      expand: false,
-      builder: (context, scrollController) {
-        return Consumer<QuranController>(
-          builder: (context, controller, _) {
-            if (controller.isRecitersLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (controller.reciters.isEmpty) {
-              return const Center(child: Text('تعذر تحميل قائمة القراء'));
-            }
-
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'اختر القارئ',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade800,
-                    ),
-                  ),
-                ),
-                const Divider(height: 1),
-                Expanded(
-                  child: ListView.separated(
-                    controller: scrollController,
-                    itemCount: controller.reciters.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final reciter = controller.reciters[index];
-                      final identifier = reciter['identifier'];
-                      final isSelected =
-                          controller.selectedReciter == identifier;
-
-                      return ListTile(
-                        title: Text(
-                          reciter['name'] ?? '',
-                          style: TextStyle(
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: isSelected
-                                ? const Color(0xFF0F4C43)
-                                : Colors.black87,
-                          ),
-                        ),
-                        trailing: isSelected
-                            ? const Icon(
-                                Icons.check_circle,
-                                color: Color(0xFF0F4C43),
-                              )
-                            : null,
-                        onTap: () {
-                          controller.setReciter(identifier);
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 }

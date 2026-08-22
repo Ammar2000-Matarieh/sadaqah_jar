@@ -10,134 +10,149 @@ class AzkarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      body: Center(
-        child: Consumer<AzkarController>(
-          builder: (context, value, child) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () => value.azkarIndexCalculate(),
-                child: Container(
-                  padding: const EdgeInsets.all(22),
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 15,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: AppColors.primaryColor.withValues(alpha: 0.08),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        value.azkarList[value.zikrIndex],
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.swap_horiz,
-                            size: 16,
-                            color: Color(0xFFDFB15B),
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            'اضغط لتغيير الذكر',
-                            style: TextStyle(fontSize: 11, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 50),
-              GestureDetector(
-                onTap: () => value.incrementCounter(),
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primaryColor, AppColors.primaryColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryColor.withValues(alpha: 0.3),
-                        blurRadius: 25,
-                        offset: const Offset(0, 12),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${value.counter}',
-                          style: const TextStyle(
-                            fontSize: 54,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        Text(
-                          'تسبيحة',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              OutlinedButton.icon(
-                onPressed: () => value.resetCounter(),
-                icon: const Icon(
-                  Icons.refresh_rounded,
-                  color: Colors.redAccent,
-                  size: 18,
-                ),
-                label: const Text(
-                  'إعادة التصفير',
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: Colors.redAccent.withValues(alpha: 0.3),
-                    width: 1.2,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ],
+      appBar: AppBar(
+        backgroundColor: AppColors.whiteColor,
+        elevation: 0,
+        title: const Text(
+          'الأذكار',
+          style: TextStyle(color: AppColors.primaryColor),
+        ),
+        actions: [
+          Consumer<AzkarController>(
+            builder: (context, value, child) => IconButton(
+              tooltip: 'تصفير الكل',
+              icon: const Icon(Icons.restart_alt, color: Colors.redAccent),
+              onPressed: () => _confirmResetAll(context, value),
+            ),
           ),
+        ],
+      ),
+      body: SafeArea(
+        child: Consumer<AzkarController>(
+          builder: (context, value, child) => ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            itemCount: value.azkarList.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              return _ZikrButton(
+                text: value.azkarList[index],
+                count: value.counters[index],
+                onTap: () => value.incrementCounter(index),
+                onReset: () => value.resetCounter(index),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmResetAll(BuildContext context, AzkarController controller) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('تصفير كل التسبيحات؟'),
+        content: const Text('رح يترجع كل العدادات لصفر.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () {
+              controller.resetAll();
+              Navigator.pop(ctx);
+            },
+            child: const Text(
+              'تصفير',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ZikrButton extends StatelessWidget {
+  final String text;
+  final int count;
+  final VoidCallback onTap;
+  final VoidCallback onReset;
+
+  const _ZikrButton({
+    required this.text,
+    required this.count,
+    required this.onTap,
+    required this.onReset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: onReset, // ضغطة طويلة = تصفير سريع
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: AppColors.primaryColor.withValues(alpha: 0.1),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            // زر التصفير الظاهر
+            InkWell(
+              onTap: onReset,
+              borderRadius: BorderRadius.circular(20),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Icon(
+                  Icons.refresh_rounded,
+                  size: 20,
+                  color: Colors.grey.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            Container(
+              width: 44,
+              height: 44,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: AppColors.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '$count',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
