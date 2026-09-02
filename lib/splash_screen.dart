@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/splash_controller.dart';
+import 'package:sadqah_jariyah_app/utils/enums/splash_enum.dart';
 import 'package:sadqah_jariyah_app/views/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {

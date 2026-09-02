@@ -1,4 +1,4 @@
-import 'package:sadqah_jariyah_app/extensions/responsive_widget.dart';
+import 'package:sadqah_jariyah_app/utils/extensions/responsive_widget.dart';
 
 extension SizeExtension on num {
   /// Calculates the height depending on the device's screen size

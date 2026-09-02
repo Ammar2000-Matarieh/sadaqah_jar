@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:sadqah_jariyah_app/api/error.dart';
+import 'package:sadqah_jariyah_app/model/azkar_categoriea.dart';
 import 'package:sadqah_jariyah_app/model/reciter.dart';
 import 'package:sadqah_jariyah_app/model/surah.dart';
 import 'package:sadqah_jariyah_app/model/surah_response.dart';
+import 'package:sadqah_jariyah_app/utils/enums/azkar_enum.dart';
 
 class CustomApiServices {
   static const String baseApiHost = "https://api.alquran.cloud/v1";
@@ -12,6 +15,35 @@ class CustomApiServices {
   static const String baseUrlAnan2 = "https://5etme.com";
   static const String hadithBaseUrl =
       "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1";
+
+  static const String baseUrlAzkar = 'https://ahegazy.github.io/muslimKit/json';
+
+  static const Map<AzkarType, String> _endpoints = {
+    AzkarType.morning: 'azkar_sabah.json',
+    AzkarType.evening: 'azkar_massa.json',
+  };
+
+  static Future<AzkarCategory> fetch(AzkarType type) async {
+    final fileName = _endpoints[type]!;
+    final uri = Uri.parse('$baseUrlAzkar/$fileName');
+
+    try {
+      final response = await http.get(uri).timeout(const Duration(seconds: 12));
+
+      if (response.statusCode != 200) {
+        throw AzkarException(
+          'تعذّر تحميل الأذكار (رمز الخطأ: ${response.statusCode})',
+        );
+      }
+
+      final decoded = json.decode(utf8.decode(response.bodyBytes));
+      return AzkarCategory.fromJson(decoded as Map<String, dynamic>);
+    } on AzkarException {
+      rethrow;
+    } catch (_) {
+      throw AzkarException('تحقق من اتصال الإنترنت وحاول مرة أخرى');
+    }
+  }
 
   Future<List<Reciter>> fetchReciters() async {
     final response = await http.get(
@@ -59,7 +91,6 @@ class CustomApiServices {
     }
   }
 
-  // Hadith methods تقدر تسيبها dynamic حاليًا أو نعملها موديل بجولة تانية إذا حابب
   Future<List<dynamic>> fetchHadithEditions() async {
     final response = await http.get(Uri.parse('$hadithBaseUrl/editions.json'));
     if (response.statusCode == 200) {
@@ -106,5 +137,39 @@ class CustomApiServices {
   ) async {
     final randomNumber = Random().nextInt(totalHadiths) + 1;
     return fetchHadithByNumber(editionName: editionName, number: randomNumber);
+  }
+
+  Future<List<dynamic>> fetchSurahDetails(int surahNumber) async {
+    final response = await http.get(Uri.parse("$baseUrl/$surahNumber"));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['data']['ayahs'] as List<dynamic>;
+    } else {
+      throw Exception('Failed to load surah details');
+    }
+  }
+
+  /// جلب روابط الصوت لقارئ معيّن
+  Future<List<String>> fetchSurahAudioUrls(
+    int surahNumber,
+    String editionId,
+  ) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/$surahNumber/$editionId"),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('القارئ غير مدعوم لهذه السورة');
+    }
+
+    final data = json.decode(response.body);
+    final List audioAyahs = data['data']['ayahs'];
+
+    return audioAyahs
+        .map((a) => a['audio'] as String?)
+        .where((u) => u != null && u.isNotEmpty)
+        .cast<String>()
+        .toList();
   }
 }

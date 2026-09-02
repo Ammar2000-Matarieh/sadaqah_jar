@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-enum SplashStatus { loading, ready, error }
+import 'package:sadqah_jariyah_app/utils/enums/splash_enum.dart';
 
 class SplashController extends ChangeNotifier {
   SplashController({this.splashDuration = const Duration(seconds: 5)});
@@ -20,7 +19,6 @@ class SplashController extends ChangeNotifier {
       _status = SplashStatus.error;
     }
 
-    // نضمن إن السبلاش ميختفيش قبل الوقت المحدد حتى لو الـ bootstrap خلص بسرعة
     final remaining = splashDuration - stopwatch.elapsed;
     if (remaining > Duration.zero) {
       await Future.delayed(remaining);

@@ -1,5 +1,3 @@
-// models/surah.dart (لـ fetchSurahs - بدون ayahs)
-
 class Surah {
   final int number;
   final String name;

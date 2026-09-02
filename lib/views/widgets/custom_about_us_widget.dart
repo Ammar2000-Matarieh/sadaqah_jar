@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
-import 'package:sadqah_jariyah_app/extensions/size.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_item_widget.dart';
 
 class CustomAboutUsWidget extends StatelessWidget {

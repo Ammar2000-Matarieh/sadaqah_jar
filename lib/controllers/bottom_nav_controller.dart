@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/views/azkar.dart';
 import 'package:sadqah_jariyah_app/views/azkar_screen.dart';
-import 'package:sadqah_jariyah_app/views/hadith.dart';
+import 'package:sadqah_jariyah_app/views/hadith_screen.dart';
 import 'package:sadqah_jariyah_app/views/prayer_times_screen.dart';
 import 'package:sadqah_jariyah_app/views/quran_screen.dart';
 

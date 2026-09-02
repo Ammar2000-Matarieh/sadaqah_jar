@@ -1,0 +1,1 @@
+enum AzkarType { morning, evening }

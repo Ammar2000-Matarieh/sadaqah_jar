@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 
 class CustomItemWidget extends StatelessWidget {
   final IconData icon;

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/api/custom_api_services.dart';
+import 'package:sadqah_jariyah_app/model/azkar.dart';
+import 'package:sadqah_jariyah_app/model/azkar_categoriea.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:sadqah_jariyah_app/utils/enums/azkar_enum.dart';
 
 class AzkarScreenNew extends StatefulWidget {
   const AzkarScreenNew({super.key});
@@ -26,7 +30,7 @@ class _AzkarScreenNewState extends State<AzkarScreenNew>
   }
 
   void _load(AzkarType type) {
-    _futures[type] = AzkarService.fetch(type);
+    _futures[type] = CustomApiServices.fetch(type);
   }
 
   Future<void> _refresh(AzkarType type) async {
@@ -48,7 +52,6 @@ class _AzkarScreenNewState extends State<AzkarScreenNew>
         backgroundColor: AppColors.whiteColor,
         appBar: AppBar(
           backgroundColor: AppColors.primaryColor,
-          // title: const Text('الأذكار'),
           bottom: TabBar(
             controller: _tabController,
             indicatorColor: Colors.white,
@@ -325,89 +328,7 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-/// Data models for Azkar (Morning / Evening remembrances).
-/// Matches the JSON schema of https://ahegazy.github.io/muslimKit/json/
-class Azkar {
-  final String text;
-  final int repeat;
-  final String source;
+// class AzkarService {
+//   AzkarService._();
 
-  const Azkar({required this.text, required this.repeat, this.source = ''});
-
-  factory Azkar.fromJson(Map<String, dynamic> json) {
-    final rawRepeat = json['repeat'];
-    final repeat = rawRepeat is int
-        ? rawRepeat
-        : int.tryParse('$rawRepeat') ?? 1;
-
-    return Azkar(
-      text: (json['zekr'] as String? ?? '').trim(),
-      repeat: repeat <= 0 ? 1 : repeat,
-      source: (json['bless'] as String? ?? '').trim(),
-    );
-  }
-}
-
-class AzkarCategory {
-  final String title;
-  final List<Azkar> content;
-
-  const AzkarCategory({required this.title, required this.content});
-
-  factory AzkarCategory.fromJson(Map<String, dynamic> json) {
-    final list = (json['content'] as List<dynamic>? ?? [])
-        .map((e) => Azkar.fromJson(e as Map<String, dynamic>))
-        .where((a) => a.text.isNotEmpty)
-        .toList();
-
-    return AzkarCategory(
-      title: (json['title'] as String? ?? '').trim(),
-      content: list,
-    );
-  }
-}
-
-enum AzkarType { morning, evening }
-
-/// Fetches Azkar from the free, keyless muslimKit JSON API.
-/// https://ahegazy.github.io/muslimKit/json/
-class AzkarService {
-  AzkarService._();
-
-  static const String _baseUrl = 'https://ahegazy.github.io/muslimKit/json';
-
-  static const Map<AzkarType, String> _endpoints = {
-    AzkarType.morning: 'azkar_sabah.json',
-    AzkarType.evening: 'azkar_massa.json',
-  };
-
-  static Future<AzkarCategory> fetch(AzkarType type) async {
-    final fileName = _endpoints[type]!;
-    final uri = Uri.parse('$_baseUrl/$fileName');
-
-    try {
-      final response = await http.get(uri).timeout(const Duration(seconds: 12));
-
-      if (response.statusCode != 200) {
-        throw AzkarException(
-          'تعذّر تحميل الأذكار (رمز الخطأ: ${response.statusCode})',
-        );
-      }
-
-      final decoded = json.decode(utf8.decode(response.bodyBytes));
-      return AzkarCategory.fromJson(decoded as Map<String, dynamic>);
-    } on AzkarException {
-      rethrow;
-    } catch (_) {
-      throw AzkarException('تحقق من اتصال الإنترنت وحاول مرة أخرى');
-    }
-  }
-}
-
-class AzkarException implements Exception {
-  final String message;
-  const AzkarException(this.message);
-
-  @override
-  String toString() => message;
-}
+// }

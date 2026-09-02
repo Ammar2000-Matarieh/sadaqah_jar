@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
-import 'package:sadqah_jariyah_app/extensions/size.dart';
-import 'package:sadqah_jariyah_app/main.dart';
+import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
+import 'package:sadqah_jariyah_app/views/surah_details_screen.dart';
 import 'package:sadqah_jariyah_app/views/widgets/reciter_bottom_widget.dart';
 
 class QuranScreen extends StatelessWidget {

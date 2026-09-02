@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/azkar_controller.dart';
+import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
 
 class AzkarScreen extends StatelessWidget {
   const AzkarScreen({super.key});
@@ -27,21 +28,19 @@ class AzkarScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Consumer<AzkarController>(
-          builder: (context, value, child) => ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            itemCount: value.azkarList.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 16),
-            itemBuilder: (context, index) {
-              return _ZikrButton(
-                text: value.azkarList[index],
-                count: value.counters[index],
-                onTap: () => value.incrementCounter(index),
-                onReset: () => value.resetCounter(index),
-              );
-            },
-          ),
+      body: Consumer<AzkarController>(
+        builder: (context, value, child) => ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3.h),
+          itemCount: value.azkarList.length,
+          separatorBuilder: (_, _) => SizedBox(height: 2.h),
+          itemBuilder: (context, index) {
+            return _ZikrButton(
+              text: value.azkarList[index],
+              count: value.counters[index],
+              onTap: () => value.incrementCounter(index),
+              onReset: () => value.resetCounter(index),
+            );
+          },
         ),
       ),
     );

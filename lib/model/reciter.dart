@@ -1,5 +1,3 @@
-// models/reciter.dart (لـ fetchReciters - نفس شكل Edition)
-
 class Reciter {
   final String identifier;
   final String language;

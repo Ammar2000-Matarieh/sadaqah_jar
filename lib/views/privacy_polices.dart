@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/views/widgets/custom_item.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -25,37 +26,37 @@ class PrivacyPolicyPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _sectionTitle('مقدمة'),
+            CustomItem(text: 'مقدمة'),
             _sectionBody(
               'نحن في تطبيق "صدقة جارية" نحترم خصوصيتك ونلتزم بحمايتها. '
               'توضح هذه السياسة نوع البيانات التي قد يتم جمعها، وكيفية استخدامها.',
             ),
 
-            _sectionTitle('البيانات التي لا نقوم بجمعها'),
+            CustomItem(text: 'البيانات التي لا نقوم بجمعها'),
             _sectionBody(
               'هذا التطبيق لا يطلب تسجيل دخول، ولا يجمع أي معلومات شخصية '
               'مثل الاسم أو البريد الإلكتروني أو رقم الهاتف.',
             ),
 
-            _sectionTitle('مصادر المحتوى'),
+            CustomItem(text: 'مصادر المحتوى'),
             _sectionBody(
               'يعرض التطبيق آيات قرآنية وأحاديث نبوية من مصادر إسلامية موثوقة '
               'عبر خدمات API مجانية ومفتوحة المصدر، ولا يتم إرسال أي بيانات '
               'خاصة بالمستخدم إلى هذه الخدمات أثناء الاستخدام.',
             ),
 
-            _sectionTitle('الأذونات المستخدمة'),
+            CustomItem(text: 'الأذونات المستخدمة'),
             _sectionBody(
               'قد يطلب التطبيق إذن الوصول للإنترنت فقط، لعرض المحتوى الديني '
               'وتحديثه بشكل مستمر.',
             ),
 
-            _sectionTitle('التعديلات على هذه السياسة'),
+            CustomItem(text: 'التعديلات على هذه السياسة'),
             _sectionBody(
               'قد يتم تحديث هذه السياسة من وقت لآخر. يُنصح بمراجعتها بشكل دوري.',
             ),
 
-            _sectionTitle('تواصل معنا'),
+            CustomItem(text: 'تواصل معنا'),
             _sectionBody(
               'لأي استفسار بخصوص الخصوصية، يمكنك التواصل معنا عبر البريد '
               'الإلكتروني الموضح في صفحة "عن التطبيق".',
@@ -63,20 +64,6 @@ class PrivacyPolicyPage extends StatelessWidget {
 
             const SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sectionTitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primaryColor,
         ),
       ),
     );

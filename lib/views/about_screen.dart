@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sadqah_jariyah_app/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_about_us_widget.dart';
 
 class AboutScreen extends StatelessWidget {

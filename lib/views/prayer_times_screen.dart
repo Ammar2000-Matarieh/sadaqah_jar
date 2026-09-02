@@ -1,9 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:adhan/adhan.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/main.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -17,8 +18,16 @@ class PrayerTimesScreen extends StatefulWidget {
 class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   String title = "مواقيت الصلاة";
   PrayerTimes? prayerTimes;
-  final player = AudioPlayer();
   bool isPlaying = false;
+  String? _currentPrayerName;
+
+  Timer? _watcher;
+  final Set<String> _firedToday = {};
+  DateTime _lastScheduledDay = DateTime(2000);
+
+  final Map<String, int> _notificationIds = {};
+
+  int? _currentFiredId;
 
   @override
   void initState() {
@@ -29,25 +38,83 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   Future<void> _initApp() async {
     await _checkLocationAndCalculate();
     if (prayerTimes != null) {
-      await scheduleAllPrayers(prayerTimes!);
+      await scheduleAllPrayers();
+
+      _startForegroundWatcher();
     }
+    return;
   }
+
+  // _scheduleTestNotification();
+  //     final pending = await flutterLocalNotificationsPlugin
+  //         .pendingNotificationRequests();
+  //     debugPrint('📋 عدد الإشعارات المجدولة: ${pending.length}');
+  //     for (var n in pending.take(5)) {
+  //       debugPrint('   → id:${n.id} title:${n.title}');
+  //     }
+
+  // Future<void> _scheduleTestNotification() async {
+  //   const androidDetails = AndroidNotificationDetails(
+  //     'prayer_channel_v3',
+  //     'مواقيت الصلاة',
+  //     channelDescription: 'تنبيهات وأذان أوقات الصلاة',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //     playSound: true,
+  //     sound: RawResourceAndroidNotificationSound('azan12'),
+  //     audioAttributesUsage: AudioAttributesUsage.alarm,
+  //   );
+  //   const notificationDetails = NotificationDetails(android: androidDetails);
+
+  //   await flutterLocalNotificationsPlugin.zonedSchedule(
+  //     id: 999,
+  //     title: '🧪 اختبار الأذان',
+  //     body: 'لو وصلك صوت أذان كامل، تمام',
+  //     scheduledDate: tz.TZDateTime.now(
+  //       tz.local,
+  //     ).add(const Duration(seconds: 30)),
+  //     notificationDetails: notificationDetails,
+  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+  //   );
+  //   debugPrint('🧪 إشعار تجريبي مجدول بعد 30 ثانية');
+  // }
+
+  static const bool _useRealGps = true; // all places
+
+  Coordinates? _lastCoordinates;
 
   Future<void> _checkLocationAndCalculate() async {
     Coordinates coordinates;
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+    if (!_useRealGps) {
+      coordinates = Coordinates(31.9539, 35.9106);
+      debugPrint('📍 [DEV MODE] إحداثيات مفروضة: عمّان');
+    } else {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        coordinates = Coordinates(31.9539, 35.9106);
+        debugPrint('📍 Fallback used (location service disabled): Amman');
+      } else {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) {
+          coordinates = Coordinates(31.9539, 35.9106); // فولباك عمّان
+          debugPrint('📍 Fallback used (no permission): Amman');
+        } else {
+          final position = await Geolocator.getCurrentPosition();
+          coordinates = Coordinates(position.latitude, position.longitude);
+          debugPrint(
+            '📍 Lat: ${position.latitude}, Lng: ${position.longitude}',
+          );
+        }
+      }
     }
 
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      coordinates = Coordinates(31.9539, 35.9106); // فولباك عمّان
-    } else {
-      final position = await Geolocator.getCurrentPosition();
-      coordinates = Coordinates(position.latitude, position.longitude);
-    }
+    _lastCoordinates = coordinates;
 
     final params = CalculationMethod.muslim_world_league.getParameters();
     params.madhab = Madhab.shafi;
@@ -59,30 +126,36 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
         params,
       );
     });
+    return;
   }
 
-  Future<void> scheduleAllPrayers(PrayerTimes times) async {
-    await flutterLocalNotificationsPlugin.cancelAll();
+  tz.TZDateTime _asAmmanLocal(DateTime raw) {
+    return tz.TZDateTime.from(raw, tz.local);
+  }
 
-    final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >();
-
-    if (androidPlugin != null) {
-      await androidPlugin.deleteNotificationChannel(
-        channelId: 'prayer_channel_v2',
-      );
-    }
-
-    final prayers = {
+  Map<String, DateTime> _prayerMapFor(DateTime date) {
+    final params = CalculationMethod.muslim_world_league.getParameters();
+    params.madhab = Madhab.shafi;
+    final times = PrayerTimes(
+      _lastCoordinates ?? Coordinates(31.9539, 35.9106),
+      DateComponents.from(date),
+      params,
+    );
+    return {
       'الفجر': times.fajr,
       'الظهر': times.dhuhr,
       'العصر': times.asr,
       'المغرب': times.maghrib,
       'العشاء': times.isha,
     };
+  }
+
+  String _keyFor(String prayerName, tz.TZDateTime local) =>
+      '$prayerName-${local.year}-${local.month}-${local.day}';
+
+  Future<void> scheduleAllPrayers() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+    _notificationIds.clear();
 
     const androidDetails = AndroidNotificationDetails(
       'prayer_channel_v3',
@@ -95,96 +168,107 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       audioAttributesUsage: AudioAttributesUsage.alarm,
     );
 
-    const notificationDetails = NotificationDetails(android: androidDetails);
+    const darwinDetails = DarwinNotificationDetails(
+      sound: 'azan12.caf',
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+    );
 
     int id = 100;
-    for (final entry in prayers.entries) {
-      final scheduled = tz.TZDateTime.from(entry.value, tz.local);
-      debugPrint(
-        '⏰ ${entry.key} -> raw:${entry.value} | scheduled:$scheduled | now:${tz.TZDateTime.now(tz.local)} | willSkip:${scheduled.isBefore(tz.TZDateTime.now(tz.local))}',
-      );
-      if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) continue;
+    final now = tz.TZDateTime.now(tz.local);
 
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id: id++,
-        title: 'حان الآن وقت صلاة ${entry.key}',
-        body: 'الله أكبر الله أكبر',
-        scheduledDate: scheduled,
-        notificationDetails: notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      );
-    }
+    for (int dayOffset = 0; dayOffset < 10; dayOffset++) {
+      final date = DateTime.now().add(Duration(days: dayOffset));
+      final prayers = _prayerMapFor(date);
 
-    debugPrint('✅ تم جدولة صلوات اليوم بنجاح');
-  }
+      for (final entry in prayers.entries) {
+        final scheduled = _asAmmanLocal(entry.value);
+        if (scheduled.isBefore(now)) continue;
 
-  /// 🧪 اختبار فقط - تنبيه بعد دقيقتين
-  Future<void> _scheduleTestNotification() async {
-    try {
-      final testTime = tz.TZDateTime.now(
-        tz.local,
-      ).add(const Duration(minutes: 2));
+        final key = _keyFor(entry.key, scheduled);
+        final thisId = id++;
+        _notificationIds[key] = thisId;
 
-      const androidDetails = AndroidNotificationDetails(
-        'prayer_channel_v3',
-        'مواقيت الصلاة',
-        channelDescription: 'تنبيهات وأذان أوقات الصلاة',
-        importance: Importance.max,
-        priority: Priority.high,
-        playSound: true,
-        sound: RawResourceAndroidNotificationSound('azan12'),
-        audioAttributesUsage: AudioAttributesUsage.alarm,
-      );
-
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id: 999,
-        title: '🧪 اختبار الأذان',
-        body: 'إذا وصلك هذا التنبيه، الجدولة شغالة',
-        scheduledDate: testTime,
-        notificationDetails: const NotificationDetails(android: androidDetails),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      );
-
-      debugPrint('✅ TEST SCHEDULED: ${testTime.toString()}');
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('تمت الجدولة بنجاح — التنبيه بعد دقيقتين')),
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          id: thisId,
+          title: 'حان الآن وقت صلاة ${entry.key}',
+          body: 'الله أكبر الله أكبر',
+          scheduledDate: scheduled,
+          notificationDetails: notificationDetails,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         );
       }
-    } catch (e, stackTrace) {
-      debugPrint('❌ TEST NOTIFICATION ERROR: $e');
-      debugPrint('$stackTrace');
+    }
 
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('خطأ في الجدولة: $e')));
+    _lastScheduledDay = DateTime.now();
+    debugPrint('✅ تم جدولة صلوات ${_notificationIds.length} إشعار بنجاح');
+    return;
+  }
+
+  void _startForegroundWatcher() {
+    _watcher?.cancel();
+    _watcher = Timer.periodic(
+      const Duration(seconds: 20),
+      (_) => _checkAndPlay(),
+    );
+  }
+
+  void _checkAndPlay() {
+    if (prayerTimes == null) return;
+    final now = DateTime.now();
+
+    if (now.day != _lastScheduledDay.day ||
+        now.month != _lastScheduledDay.month) {
+      _checkLocationAndCalculate().then((_) => scheduleAllPrayers());
+      _firedToday.clear();
+    }
+
+    final prayers = _prayerMap(prayerTimes!);
+
+    for (final entry in prayers.entries) {
+      final local = _asAmmanLocal(entry.value);
+      final key = _keyFor(entry.key, local);
+      final matches = now.hour == local.hour && now.minute == local.minute;
+      if (matches && !_firedToday.contains(key)) {
+        _firedToday.add(key);
+        setState(() {
+          isPlaying = true;
+          _currentPrayerName = entry.key;
+          _currentFiredId = _notificationIds[key];
+        });
       }
     }
   }
 
-  Future<void> _debugPrintPending() async {
-    final pending = await flutterLocalNotificationsPlugin
-        .pendingNotificationRequests();
-    debugPrint('عدد التنبيهات المجدولة: ${pending.length}');
-    for (final p in pending) {
-      debugPrint('- id:${p.id} title:${p.title}');
-    }
-  }
+  Map<String, DateTime> _prayerMap(PrayerTimes times) => {
+    'الفجر': times.fajr,
+    'الظهر': times.dhuhr,
+    'العصر': times.asr,
+    'المغرب': times.maghrib,
+    'العشاء': times.isha,
+  };
 
-  Future<void> _toggleAdhan() async {
-    if (isPlaying) {
-      await player.stop();
-    } else {
-      await player.play(AssetSource('audio/azan12.mp3'));
+  Future<void> _stopAdhan() async {
+    if (_currentFiredId != null) {
+      await flutterLocalNotificationsPlugin.cancel(id: _currentFiredId!);
     }
-    setState(() => isPlaying = !isPlaying);
+    setState(() {
+      isPlaying = false;
+      _currentPrayerName = null;
+      _currentFiredId = null;
+    });
+    return;
   }
 
   @override
   void dispose() {
-    player.dispose();
+    _watcher?.cancel();
     super.dispose();
   }
 
@@ -205,34 +289,46 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                   _buildPrayerTile("المغرب", prayerTimes!.maghrib),
                   _buildPrayerTile("العشاء", prayerTimes!.isha),
                   const Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _scheduleTestNotification,
-                          child: const Text("اختبار: تنبيه بعد دقيقتين"),
-                        ),
+                  if (isPlaying)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.teal, width: 1.5),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _debugPrintPending,
-                          child: const Text("اطبع المجدول"),
-                        ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.volume_up,
+                            color: Colors.teal,
+                            size: 28,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'حان الآن وقت صلاة ${_currentPrayerName ?? ""}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.teal,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: _stopAdhan,
+                            icon: const Icon(Icons.stop_circle, size: 20),
+                            label: const Text('إيقاف'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[600],
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isPlaying ? Colors.red : Colors.teal,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 50),
                     ),
-                    onPressed: _toggleAdhan,
-                    icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
-                    label: Text(isPlaying ? "إيقاف الأذان" : "تشغيل الأذان"),
-                  ),
                 ],
               ),
             ),
@@ -240,50 +336,26 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   }
 
   Widget _buildPrayerTile(String name, DateTime time) {
-    // final localTime = time.toLocal(); // 👈 هذا هو الحل
-    final localTime = tz.TZDateTime.from(time, tz.local);
+    final localTime = _asAmmanLocal(time);
     return Card(
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ListTile(
-        leading: const Icon(Icons.access_time, color: Colors.teal),
+        leading: const Icon(Icons.access_time, color: AppColors.primaryColor),
         title: Text(
           name,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         trailing: Text(
-          DateFormat('hh:mm a').format(localTime), // 👈 استخدم localTime
+          DateFormat('hh:mm a').format(localTime),
           style: const TextStyle(
             fontSize: 18,
-            color: Colors.teal,
+            color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
     );
   }
-
-  // Widget _buildPrayerTile(String name, DateTime time) {
-  //   return Card(
-  //     elevation: 3,
-  //     margin: const EdgeInsets.symmetric(vertical: 8),
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-  //     child: ListTile(
-  //       leading: const Icon(Icons.access_time, color: Colors.teal),
-  //       title: Text(
-  //         name,
-  //         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-  //       ),
-  //       trailing: Text(
-  //         DateFormat('hh:mm a').format(time),
-  //         style: const TextStyle(
-  //           fontSize: 18,
-  //           color: Colors.teal,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

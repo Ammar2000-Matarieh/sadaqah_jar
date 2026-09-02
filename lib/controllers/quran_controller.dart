@@ -8,11 +8,9 @@ class QuranController extends ChangeNotifier {
   final CustomApiServices _service = CustomApiServices();
   static const String _reciterPrefsKey = 'selected_reciter';
 
-  List<Surah> _surahs = []; // بدل List<dynamic>
+  List<Surah> _surahs = [];
   List<Reciter> _reciters = [];
 
-  // List<dynamic> _surahs = [];
-  // List<dynamic> _reciters = [];
   String _selectedReciter = 'ar.alafasy';
   bool _isLoading = false;
   bool _isRecitersLoading = false;

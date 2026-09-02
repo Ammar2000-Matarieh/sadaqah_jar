@@ -1,5 +1,3 @@
-// models/surah_response.dart
-
 class SurahAudioResponse {
   final int code;
   final String status;
@@ -98,7 +96,7 @@ class Ayah {
       page: json['page'] as int,
       ruku: json['ruku'] as int,
       hizbQuarter: json['hizbQuarter'] as int,
-      sajda: json['sajda'] is Map, // true إذا فيها سجدة
+      sajda: json['sajda'] is Map,
     );
   }
 }
