@@ -4,8 +4,6 @@ import 'package:sadqah_jariyah_app/api/custom_api_services.dart';
 import 'package:sadqah_jariyah_app/model/azkar.dart';
 import 'package:sadqah_jariyah_app/model/azkar_categoriea.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:sadqah_jariyah_app/utils/enums/azkar_enum.dart';
 
 class AzkarScreenNew extends StatefulWidget {
@@ -55,6 +53,8 @@ class _AzkarScreenNewState extends State<AzkarScreenNew>
           bottom: TabBar(
             controller: _tabController,
             indicatorColor: Colors.white,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.grey,
             tabs: const [
               Tab(
                 icon: Icon(

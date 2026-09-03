@@ -50,14 +50,30 @@ class AzkarScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('تصفير كل التسبيحات؟'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(4.r),
+        ),
+        title: const Text(
+          'تصفير كل التسبيحات؟',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        ),
         content: const Text('رح يترجع كل العدادات لصفر.'),
         actions: [
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(3.r),
+              ),
+            ),
             onPressed: () => Navigator.pop(ctx),
             child: const Text('إلغاء'),
           ),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(3.r),
+              ),
+            ),
             onPressed: () {
               controller.resetAll();
               Navigator.pop(ctx);

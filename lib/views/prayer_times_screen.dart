@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/main.dart';
+import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class PrayerTimesScreen extends StatefulWidget {
@@ -278,61 +279,73 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       backgroundColor: Colors.grey[100],
       body: prayerTimes == null
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  _buildPrayerTile("الفجر", prayerTimes!.fajr),
-                  _buildPrayerTile("الشروق", prayerTimes!.sunrise),
-                  _buildPrayerTile("الظهر", prayerTimes!.dhuhr),
-                  _buildPrayerTile("العصر", prayerTimes!.asr),
-                  _buildPrayerTile("المغرب", prayerTimes!.maghrib),
-                  _buildPrayerTile("العشاء", prayerTimes!.isha),
-                  const Spacer(),
-                  if (isPlaying)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.teal.shade50,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.teal, width: 1.5),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.volume_up,
-                            color: Colors.teal,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'حان الآن وقت صلاة ${_currentPrayerName ?? ""}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.teal,
+          : RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: [
+                    _buildPrayerTile("الفجر", prayerTimes!.fajr),
+                    _buildPrayerTile("الشروق", prayerTimes!.sunrise),
+                    _buildPrayerTile("الظهر", prayerTimes!.dhuhr),
+                    _buildPrayerTile("العصر", prayerTimes!.asr),
+                    _buildPrayerTile("المغرب", prayerTimes!.maghrib),
+                    _buildPrayerTile("العشاء", prayerTimes!.isha),
+                    // const Spacer(),
+                    SizedBox(height: 29.h),
+                    if (isPlaying)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.teal.shade50,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.teal, width: 1.5),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.volume_up,
+                              color: Colors.teal,
+                              size: 28,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                'حان الآن وقت صلاة ${_currentPrayerName ?? ""}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.teal,
+                                ),
                               ),
                             ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: _stopAdhan,
-                            icon: const Icon(Icons.stop_circle, size: 20),
-                            label: const Text('إيقاف'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red[600],
-                              foregroundColor: Colors.white,
+                            ElevatedButton.icon(
+                              onPressed: _stopAdhan,
+                              icon: const Icon(Icons.stop_circle, size: 20),
+                              label: const Text('إيقاف'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red[600],
+                                foregroundColor: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
     );
+  }
+
+  Future<void> _handleRefresh() async {
+    await _checkLocationAndCalculate();
+    if (prayerTimes != null) {
+      await scheduleAllPrayers();
+      _firedToday.clear(); // تصفير حتى ما تتكرر إشعارات نفس اليوم بشكل خاطئ
+    }
   }
 
   Widget _buildPrayerTile(String name, DateTime time) {

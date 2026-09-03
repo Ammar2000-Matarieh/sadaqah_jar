@@ -24,88 +24,94 @@ class QuranScreen extends StatelessWidget {
               child: CircularProgressIndicator(color: AppColors.primaryColor),
             );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-            itemCount: value.surahs.length,
-            itemBuilder: (context, index) {
-              final surah = value.surahs[index];
+          return RefreshIndicator(
+            color: AppColors.primaryColor,
+            onRefresh: () => context.read<QuranController>().getSurahs(),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+              itemCount: value.surahs.length,
+              itemBuilder: (context, index) {
+                final surah = value.surahs[index];
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  elevation: 0,
-                  shadowColor: Colors.black.withValues(alpha: 0.02),
-                  child: InkWell(
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Material(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SurahDetailsPage(
-                            surahNumber: surah.number,
-                            surahName: surah.name,
+                    elevation: 0,
+                    shadowColor: Colors.black.withValues(alpha: 0.02),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SurahDetailsPage(
+                              surahNumber: surah.number,
+                              surahName: surah.name,
+                            ),
                           ),
+                        );
+                      },
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
                         ),
-                      );
-                    },
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 6,
-                      ),
-                      leading: Container(
-                        width: 10.w,
-                        height: 7.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.08),
-                          shape: BoxShape.circle,
-                          border: Border.all(
+                        leading: Container(
+                          width: 10.w,
+                          height: 7.h,
+                          decoration: BoxDecoration(
                             color: AppColors.primaryColor.withValues(
-                              alpha: 0.15,
+                              alpha: 0.08,
+                            ),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.15,
+                              ),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${surah.number}',
+                              style: const TextStyle(
+                                color: AppColors.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ),
-                        child: Center(
+                        title: Text(
+                          surah.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: EdgeInsets.only(top: 1.h),
                           child: Text(
-                            '${surah.number}',
-                            style: const TextStyle(
-                              color: AppColors.primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                            'آياتها: ${surah.numberOfAyahs}  •  ${surah.revelationType == 'Meccan' ? 'مكية' : 'مدنية'}',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 12,
                             ),
                           ),
                         ),
-                      ),
-                      title: Text(
-                        surah.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: AppColors.primaryColor,
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14,
+                          color: Colors.black,
                         ),
-                      ),
-                      subtitle: Padding(
-                        padding: EdgeInsets.only(top: 1.h),
-                        child: Text(
-                          'آياتها: ${surah.numberOfAyahs}  •  ${surah.revelationType == 'Meccan' ? 'مكية' : 'مدنية'}',
-                          style: TextStyle(
-                            color: Colors.grey.shade500,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: Colors.black,
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),
