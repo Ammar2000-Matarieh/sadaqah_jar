@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_item_widget.dart';
 
 class CustomAboutUsWidget extends StatelessWidget {
@@ -16,10 +17,9 @@ class CustomAboutUsWidget extends StatelessWidget {
             SizedBox(height: 2.h),
 
             Container(
-              // width: ,
               padding: EdgeInsets.all(4.r),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.palette.card,
                 borderRadius: BorderRadius.circular(6.r),
                 boxShadow: [
                   BoxShadow(
@@ -53,12 +53,12 @@ class CustomAboutUsWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  const Text(
+                  Text(
                     ' تطبيق يساعدك على أداء العبادات اليومية والمحافظة على الأذكار والقرآن الكريم.',
                     style: TextStyle(
                       fontSize: 16,
                       height: 1.8,
-                      color: Color(0xFF475569),
+                      color: context.palette.cardTitle, // Color(0xFF475569)
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -88,7 +88,7 @@ class CustomAboutUsWidget extends StatelessWidget {
             const SizedBox(height: 30),
 
             Container(
-              width: double.infinity,
+              width: MediaQuery.sizeOf(context).width,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               decoration: BoxDecoration(
                 color: AppColors.secColor.withValues(alpha: 0.08),
@@ -98,7 +98,7 @@ class CustomAboutUsWidget extends StatelessWidget {
                 ),
               ),
               child: const Text(
-                '﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾', // TODO: استبدل بآية مناسبة لتطبيقك
+                '﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

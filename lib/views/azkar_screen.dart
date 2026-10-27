@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/azkar_controller.dart';
 import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 
 class AzkarScreen extends StatelessWidget {
   const AzkarScreen({super.key});
@@ -10,9 +11,9 @@ class AzkarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: context.palette.background,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: context.palette.background,
         elevation: 0,
         title: const Text(
           'الأذكار',
@@ -106,11 +107,11 @@ class _ZikrButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      onLongPress: onReset, // ضغطة طويلة = تصفير سريع
+      onLongPress: onReset,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.palette.card,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: AppColors.primaryColor.withValues(alpha: 0.1),
@@ -136,7 +137,7 @@ class _ZikrButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            // زر التصفير الظاهر
+
             InkWell(
               onTap: onReset,
               borderRadius: BorderRadius.circular(20),

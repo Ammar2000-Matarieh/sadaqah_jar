@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/api/custom_api_services.dart';
-import 'package:sadqah_jariyah_app/model/reciter.dart';
+import 'package:sadqah_jariyah_app/model/reciter_model.dart';
 import 'package:sadqah_jariyah_app/model/surah.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:sadqah_jariyah_app/run_app.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -9,6 +10,9 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  MobileAds.instance
+      .initialize(); // AdMob (بدون await عشان ما يبطّئ فتح التطبيق)
 
   tzdata.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Asia/Amman'));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_about_us_widget.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -8,13 +9,14 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: context.palette.background,
       appBar: AppBar(
         title: const Text(
           'عن التطبيق',
           style: TextStyle(color: AppColors.whiteColor),
         ),
-        backgroundColor: AppColors.primaryColor,
+        // backgroundColor: AppColors.primaryColor,
+        backgroundColor: context.palette.topBar,
         elevation: 0,
         foregroundColor: Colors.white,
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 
 class RateAppBottomSheet extends StatefulWidget {
   const RateAppBottomSheet({super.key});
@@ -30,8 +31,8 @@ class _RateAppBottomSheetState extends State<RateAppBottomSheet> {
         top: 24,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: context.palette.card, //white
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -86,20 +87,20 @@ class _RateAppBottomSheetState extends State<RateAppBottomSheet> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            width: double.infinity,
+            width: MediaQuery.sizeOf(context).width,
             child: ElevatedButton(
               onPressed: _rating == 0 ? null : _handleSubmit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
+                backgroundColor: context.palette.topBar,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'إرسال',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: context.palette.cardTitle, //Colors.white
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
@@ -115,17 +116,13 @@ class _RateAppBottomSheetState extends State<RateAppBottomSheet> {
     Navigator.pop(context);
 
     if (_rating >= 4) {
-      // تقييم عالي → المتجر مباشرة
       final inAppReview = InAppReview.instance;
       if (await inAppReview.isAvailable()) {
         inAppReview.requestReview();
       } else {
-        inAppReview.openStoreListing(
-          appStoreId: 'YOUR_APP_STORE_ID', // لـ iOS
-        );
+        inAppReview.openStoreListing(appStoreId: 'YOUR_APP_STORE_ID');
       }
     } else {
-      // تقييم منخفض → feedback داخلي بدل المتجر
       _showFeedbackDialog();
     }
   }
@@ -144,7 +141,6 @@ class _RateAppBottomSheetState extends State<RateAppBottomSheet> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: افتح شاشة فيدباك أو ايميل دعم
             },
             child: const Text('إرسال ملاحظات'),
           ),

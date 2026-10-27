@@ -1,4 +1,4 @@
-import 'package:sadqah_jariyah_app/model/azkar.dart';
+import 'package:sadqah_jariyah_app/model/azkar_model.dart';
 
 class AzkarCategory {
   final String title;

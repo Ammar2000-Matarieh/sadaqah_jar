@@ -1,16 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
-import 'package:sadqah_jariyah_app/views/widgets/custom_item.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
-class PrivacyPolicyPage extends StatelessWidget {
+class PrivacyPolicyPage extends StatefulWidget {
   const PrivacyPolicyPage({super.key});
+
+  @override
+  State<PrivacyPolicyPage> createState() => _PrivacyPolicyPageState();
+}
+
+class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
+  static final Uri _privacyUrl = Uri.parse(
+    'https://sites.google.com/view/mutqen-privacy/',
+  );
+
+  late final WebViewController _controller;
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) => setState(() {
+            _isLoading = true;
+            _hasError = false;
+          }),
+          onPageFinished: (_) => setState(() => _isLoading = false),
+          onWebResourceError: (_) => setState(() {
+            _isLoading = false;
+            _hasError = true;
+          }),
+        ),
+      )
+      ..loadRequest(_privacyUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      // backgroundColor: AppColors.whiteColor,
+      backgroundColor: context.palette.topBar,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
+        // backgroundColor: AppColors.primaryColor,
+        backgroundColor: context.palette.topBar,
         elevation: 0,
         title: const Text(
           'سياسة الخصوصية',
@@ -21,59 +58,35 @@ class PrivacyPolicyPage extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(color: AppColors.whiteColor),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomItem(text: 'مقدمة'),
-            _sectionBody(
-              'نحن في تطبيق "صدقة جارية" نحترم خصوصيتك ونلتزم بحمايتها. '
-              'توضح هذه السياسة نوع البيانات التي قد يتم جمعها، وكيفية استخدامها.',
-            ),
-
-            CustomItem(text: 'البيانات التي لا نقوم بجمعها'),
-            _sectionBody(
-              'هذا التطبيق لا يطلب تسجيل دخول، ولا يجمع أي معلومات شخصية '
-              'مثل الاسم أو البريد الإلكتروني أو رقم الهاتف.',
-            ),
-
-            CustomItem(text: 'مصادر المحتوى'),
-            _sectionBody(
-              'يعرض التطبيق آيات قرآنية وأحاديث نبوية من مصادر إسلامية موثوقة '
-              'عبر خدمات API مجانية ومفتوحة المصدر، ولا يتم إرسال أي بيانات '
-              'خاصة بالمستخدم إلى هذه الخدمات أثناء الاستخدام.',
-            ),
-
-            CustomItem(text: 'الأذونات المستخدمة'),
-            _sectionBody(
-              'قد يطلب التطبيق إذن الوصول للإنترنت فقط، لعرض المحتوى الديني '
-              'وتحديثه بشكل مستمر.',
-            ),
-
-            CustomItem(text: 'التعديلات على هذه السياسة'),
-            _sectionBody(
-              'قد يتم تحديث هذه السياسة من وقت لآخر. يُنصح بمراجعتها بشكل دوري.',
-            ),
-
-            CustomItem(text: 'تواصل معنا'),
-            _sectionBody(
-              'لأي استفسار بخصوص الخصوصية، يمكنك التواصل معنا عبر البريد '
-              'الإلكتروني الموضح في صفحة "عن التطبيق".',
-            ),
-
-            const SizedBox(height: 20),
-          ],
-        ),
+      body: Stack(
+        children: [
+          if (_hasError)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'تعذّر تحميل سياسة الخصوصية',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15, height: 1.6),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _controller.reload(),
+                      child: const Text('إعادة المحاولة'),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            WebViewWidget(controller: _controller),
+          if (_isLoading && !_hasError)
+            const Center(child: CircularProgressIndicator()),
+        ],
       ),
-    );
-  }
-
-  Widget _sectionBody(String text) {
-    return Text(
-      text,
-      style: const TextStyle(fontSize: 14.5, height: 1.8, color: Colors.black),
-      textAlign: TextAlign.justify,
     );
   }
 }

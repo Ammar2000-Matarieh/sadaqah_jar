@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
 import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:sadqah_jariyah_app/views/surah_details_screen.dart';
-import 'package:sadqah_jariyah_app/views/widgets/reciter_bottom_widget.dart';
 
 class QuranScreen extends StatelessWidget {
   const QuranScreen({super.key});
@@ -16,7 +16,7 @@ class QuranScreen extends StatelessWidget {
       Provider.of<QuranController>(context, listen: false).getReciters();
     });
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: context.palette.background,
       body: Consumer<QuranController>(
         builder: (context, value, child) {
           if (value.isLoading) {
@@ -36,7 +36,7 @@ class QuranScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Material(
-                    color: Colors.white,
+                    color: context.palette.card,
                     borderRadius: BorderRadius.circular(16),
                     elevation: 0,
                     shadowColor: Colors.black.withValues(alpha: 0.02),
@@ -85,10 +85,11 @@ class QuranScreen extends StatelessWidget {
                         ),
                         title: Text(
                           surah.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: AppColors.primaryColor,
+                            // color: AppColors.primaryColor,
+                            color: context.palette.cardTitle,
                           ),
                         ),
                         subtitle: Padding(
@@ -101,10 +102,11 @@ class QuranScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        trailing: const Icon(
+                        trailing: Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 14,
-                          color: Colors.black,
+                          color: context.palette.resetIcon,
+                          //Colors.black
                         ),
                       ),
                     ),
@@ -115,17 +117,6 @@ class QuranScreen extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  void _showReciterSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => const ReciterBottomSheet(),
     );
   }
 }

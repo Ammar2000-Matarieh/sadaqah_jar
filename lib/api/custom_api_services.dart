@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sadqah_jariyah_app/api/error.dart';
 import 'package:sadqah_jariyah_app/model/azkar_categoriea.dart';
-import 'package:sadqah_jariyah_app/model/reciter.dart';
+import 'package:sadqah_jariyah_app/model/reciter_model.dart';
 import 'package:sadqah_jariyah_app/model/surah.dart';
 import 'package:sadqah_jariyah_app/model/surah_response.dart';
 import 'package:sadqah_jariyah_app/utils/enums/azkar_enum.dart';

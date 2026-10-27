@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/hadith_controller.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_body_hadith.dart';
 
 class HadithScreen extends StatelessWidget {
@@ -14,7 +14,7 @@ class HadithScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: context.palette.background,
       body: CustomHadithBody(),
     );
   }

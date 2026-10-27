@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/main.dart';
 import 'package:sadqah_jariyah_app/utils/extensions/size.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class PrayerTimesScreen extends StatefulWidget {
@@ -45,40 +46,6 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
     }
     return;
   }
-
-  // _scheduleTestNotification();
-  //     final pending = await flutterLocalNotificationsPlugin
-  //         .pendingNotificationRequests();
-  //     debugPrint('📋 عدد الإشعارات المجدولة: ${pending.length}');
-  //     for (var n in pending.take(5)) {
-  //       debugPrint('   → id:${n.id} title:${n.title}');
-  //     }
-
-  // Future<void> _scheduleTestNotification() async {
-  //   const androidDetails = AndroidNotificationDetails(
-  //     'prayer_channel_v3',
-  //     'مواقيت الصلاة',
-  //     channelDescription: 'تنبيهات وأذان أوقات الصلاة',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //     playSound: true,
-  //     sound: RawResourceAndroidNotificationSound('azan12'),
-  //     audioAttributesUsage: AudioAttributesUsage.alarm,
-  //   );
-  //   const notificationDetails = NotificationDetails(android: androidDetails);
-
-  //   await flutterLocalNotificationsPlugin.zonedSchedule(
-  //     id: 999,
-  //     title: '🧪 اختبار الأذان',
-  //     body: 'لو وصلك صوت أذان كامل، تمام',
-  //     scheduledDate: tz.TZDateTime.now(
-  //       tz.local,
-  //     ).add(const Duration(seconds: 30)),
-  //     notificationDetails: notificationDetails,
-  //     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //   );
-  //   debugPrint('🧪 إشعار تجريبي مجدول بعد 30 ثانية');
-  // }
 
   static const bool _useRealGps = true; // all places
 
@@ -276,7 +243,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: context.palette.background,
       body: prayerTimes == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -295,7 +262,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                     SizedBox(height: 29.h),
                     if (isPlaying)
                       Container(
-                        width: double.infinity,
+                        width: MediaQuery.sizeOf(context).width,
                         padding: const EdgeInsets.all(16),
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(

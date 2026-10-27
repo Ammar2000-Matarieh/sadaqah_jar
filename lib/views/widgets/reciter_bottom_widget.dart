@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 
 class ReciterBottomSheet extends StatelessWidget {
   const ReciterBottomSheet({super.key});
@@ -33,7 +34,8 @@ class ReciterBottomSheet extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade800,
+                      // color: Colors.grey.shade800,
+                      color: context.palette.cardTitle,
                     ),
                   ),
                 ),
@@ -51,14 +53,15 @@ class ReciterBottomSheet extends StatelessWidget {
 
                       return ListTile(
                         title: Text(
-                          reciter.name ?? '',
+                          reciter.name,
                           style: TextStyle(
                             fontWeight: isSelected
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                             color: isSelected
                                 ? AppColors.primaryColor
-                                : Colors.black87,
+                                // : Colors.black87,
+                                : context.palette.cardTitle,
                           ),
                         ),
                         trailing: isSelected

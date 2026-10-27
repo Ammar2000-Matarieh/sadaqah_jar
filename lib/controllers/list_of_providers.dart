@@ -3,7 +3,11 @@ import 'package:provider/single_child_widget.dart';
 import 'package:sadqah_jariyah_app/controllers/azkar_controller.dart';
 import 'package:sadqah_jariyah_app/controllers/bottom_nav_controller.dart';
 import 'package:sadqah_jariyah_app/controllers/hadith_controller.dart';
+import 'package:sadqah_jariyah_app/controllers/names_controller.dart';
+import 'package:sadqah_jariyah_app/controllers/qeblah_controller.dart';
 import 'package:sadqah_jariyah_app/controllers/quran_controller.dart';
+import 'package:sadqah_jariyah_app/controllers/theme_controller.dart';
+import 'package:sadqah_jariyah_app/views/mushaf_screen.dart';
 
 List<SingleChildWidget> listOfProviders = [
   ChangeNotifierProvider(create: (context) => QuranController(), lazy: true),
@@ -13,4 +17,8 @@ List<SingleChildWidget> listOfProviders = [
   ),
   ChangeNotifierProvider(create: (context) => AzkarController(), lazy: true),
   ChangeNotifierProvider(create: (context) => HadithController(), lazy: true),
+  ChangeNotifierProvider(create: (context) => ThemeController(), lazy: true),
+  ChangeNotifierProvider(create: (context) => NamesController(), lazy: true),
+  ChangeNotifierProvider(create: (context) => QiblaController(), lazy: true),
+  ChangeNotifierProvider(create: (context) => ReadingTracker(), lazy: true),
 ];

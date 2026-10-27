@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sadqah_jariyah_app/api/custom_api_services.dart';
-import 'package:sadqah_jariyah_app/model/azkar.dart';
+import 'package:sadqah_jariyah_app/model/azkar_model.dart';
 import 'package:sadqah_jariyah_app/model/azkar_categoriea.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/utils/enums/azkar_enum.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 
 class AzkarScreenNew extends StatefulWidget {
   const AzkarScreenNew({super.key});
@@ -47,9 +48,9 @@ class _AzkarScreenNewState extends State<AzkarScreenNew>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: context.palette.background,
         appBar: AppBar(
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: context.palette.background,
           bottom: TabBar(
             controller: _tabController,
             indicatorColor: Colors.white,
@@ -227,6 +228,28 @@ class _AzkarCard extends StatelessWidget {
 
   bool get _isDone => remaining == 0;
 
+  String get _copyText {
+    final buffer = StringBuffer(azkar.text);
+    if (azkar.source.isNotEmpty) buffer.write('\n\n(${azkar.source})');
+    if (azkar.repeat > 1) buffer.write('\nيُقال ${azkar.repeat} مرات');
+    return buffer.toString();
+  }
+
+  Future<void> _copy(BuildContext context) async {
+    HapticFeedback.mediumImpact();
+    await Clipboard.setData(ClipboardData(text: _copyText));
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('تم نسخ الذكر'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
@@ -245,6 +268,7 @@ class _AzkarCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
           onTap: _isDone ? null : onTap,
+          onLongPress: () => _copy(context), // يشتغل حتى لو الذكر مكتمل
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -256,7 +280,6 @@ class _AzkarCard extends StatelessWidget {
                     fontSize: 16,
                     height: 1.8,
                     fontWeight: FontWeight.w500,
-
                     color: AppColors.whiteColor,
                   ),
                 ),
@@ -271,24 +294,40 @@ class _AzkarCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundColor: _isDone
-                        ? Colors.green
-                        : AppColors.primaryColor,
-                    child: _isDone
-                        ? const Icon(Icons.check, color: Colors.white, size: 18)
-                        : Text(
-                            '$remaining',
-                            style: const TextStyle(
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    IconButton(
+                      tooltip: 'نسخ',
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(
+                        Icons.copy_rounded,
+                        size: 20,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
+                      onPressed: () => _copy(context),
+                    ),
+                    const Spacer(),
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: _isDone
+                          ? Colors.green
+                          : AppColors.primaryColor,
+                      child: _isDone
+                          ? const Icon(
+                              Icons.check,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              size: 18,
+                            )
+                          : Text(
+                              '$remaining',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -298,6 +337,90 @@ class _AzkarCard extends StatelessWidget {
     );
   }
 }
+// class _AzkarCard extends StatelessWidget {
+//   final Azkar azkar;
+//   final int remaining;
+//   final VoidCallback onTap;
+
+//   const _AzkarCard({
+//     required this.azkar,
+//     required this.remaining,
+//     required this.onTap,
+//   });
+
+//   bool get _isDone => remaining == 0;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return AnimatedOpacity(
+//       duration: const Duration(milliseconds: 250),
+//       opacity: _isDone ? 0.55 : 1,
+//       child: Card(
+//         margin: const EdgeInsets.only(bottom: 12),
+//         elevation: 0,
+//         color: AppColors.primaryColor,
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(14),
+//           side: BorderSide(
+//             color: AppColors.primaryColor.withValues(alpha: 0.1),
+//           ),
+//         ),
+//         child: InkWell(
+//           borderRadius: BorderRadius.circular(14),
+//           onTap: _isDone ? null : onTap,
+//           child: Padding(
+//             padding: const EdgeInsets.all(16),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   azkar.text,
+//                   style: const TextStyle(
+//                     fontSize: 16,
+//                     height: 1.8,
+//                     fontWeight: FontWeight.w500,
+
+//                     color: AppColors.whiteColor,
+//                   ),
+//                 ),
+//                 if (azkar.source.isNotEmpty) ...[
+//                   const SizedBox(height: 10),
+//                   Text(
+//                     azkar.source,
+//                     style: TextStyle(
+//                       fontSize: 12,
+//                       color: Colors.white.withValues(alpha: 0.7),
+//                       fontStyle: FontStyle.italic,
+//                     ),
+//                   ),
+//                 ],
+//                 const SizedBox(height: 12),
+//                 Align(
+//                   alignment: Alignment.centerLeft,
+//                   child: CircleAvatar(
+//                     radius: 18,
+//                     backgroundColor: _isDone
+//                         ? Colors.green
+//                         : AppColors.primaryColor,
+//                     child: _isDone
+//                         ? const Icon(Icons.check, color: Colors.white, size: 18)
+//                         : Text(
+//                             '$remaining',
+//                             style: const TextStyle(
+//                               color: Colors.white,
+//                               fontWeight: FontWeight.bold,
+//                             ),
+//                           ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _ErrorState extends StatelessWidget {
   final String message;

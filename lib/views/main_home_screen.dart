@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
 import 'package:sadqah_jariyah_app/controllers/bottom_nav_controller.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
+import 'package:sadqah_jariyah_app/views/widgets/banner_ad_widget.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_body_nav_bar.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_bottom_nav_widget.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_drawer_app.dart';
@@ -27,22 +28,17 @@ class MainHomeScreen extends StatelessWidget {
               );
             },
           ),
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: context.palette.topBar,
+          //AppColors.primaryColor
           centerTitle: true,
           elevation: 0,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.primaryColor, AppColors.primaryColor],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
         ),
         drawer: CustomDrawerApp(),
         body: CustomBody(),
-        bottomNavigationBar: CustomBottomNavBar(),
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [BannerAdWidget(), CustomBottomNavBar()],
+        ),
       ),
     );
   }

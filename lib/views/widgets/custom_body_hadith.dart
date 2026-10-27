@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/controllers/hadith_controller.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 
 class CustomHadithBody extends StatelessWidget {
   const CustomHadithBody({super.key});
@@ -11,7 +13,7 @@ class CustomHadithBody extends StatelessWidget {
     return Consumer<HadithController>(
       builder: (context, value, child) {
         if (value.isLoading) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(color: AppColors.primaryColor),
           );
         }
@@ -53,9 +55,11 @@ class CustomHadithBody extends StatelessWidget {
             itemBuilder: (context, index) {
               final hadith = value.hadiths[index];
               return Container(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  // color: Colors.white,
+
+                  color: context.palette.card,
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
@@ -68,46 +72,53 @@ class CustomHadithBody extends StatelessWidget {
                     color: AppColors.primaryColor.withValues(alpha: 0.04),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        hadith['text']!,
-                        style: const TextStyle(
-                          fontSize: 15.5,
-                          height: 1.75,
-                          color: Color(0xFF334155),
-                          fontWeight: FontWeight.w500,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onLongPress: () => _copyHadith(context, hadith),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          hadith['text']!,
+                          style: TextStyle(
+                            fontSize: 15.5,
+                            height: 1.75,
+                            // color: Color(0xFF334155),
+                            color: context.palette.cardTitle,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.justify,
                         ),
-                        textAlign: TextAlign.justify,
-                      ),
-                      const SizedBox(height: 14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.secColor.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              'حديث رقم: ${hadith['id']}',
-                              style: const TextStyle(
-                                color: AppColors.goldColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
+                        const SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.secColor.withValues(
+                                  alpha: 0.15,
+                                ),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                'حديث رقم: ${hadith['id']}',
+                                style: const TextStyle(
+                                  color: AppColors.goldColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -116,5 +127,21 @@ class CustomHadithBody extends StatelessWidget {
         );
       },
     );
+  }
+
+  // new :
+  Future<void> _copyHadith(BuildContext context, Map hadith) async {
+    final text = '${hadith['text']}\n\n(حديث رقم: ${hadith['id']})';
+    await Clipboard.setData(ClipboardData(text: text));
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('تم نسخ الحديث'),
+          duration: Duration(seconds: 2),
+        ),
+      );
   }
 }

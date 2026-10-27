@@ -2,8 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sadqah_jariyah_app/controllers/bottom_nav_controller.dart';
+import 'package:sadqah_jariyah_app/controllers/theme_controller.dart';
 import 'package:sadqah_jariyah_app/utils/constants/app_colors.dart';
+import 'package:sadqah_jariyah_app/utils/theme/app_palette.dart';
 import 'package:sadqah_jariyah_app/views/about_screen.dart';
+import 'package:sadqah_jariyah_app/views/azkar_screen_new.dart';
+import 'package:sadqah_jariyah_app/views/mushaf_screen.dart';
+import 'package:sadqah_jariyah_app/views/names_of_allah_screen.dart';
 import 'package:sadqah_jariyah_app/views/privacy_polices.dart';
 import 'package:sadqah_jariyah_app/views/widgets/custom_drawer_footer.dart';
 import 'package:sadqah_jariyah_app/views/widgets/rate_app.dart';
@@ -35,7 +40,50 @@ class CustomDrawerApp extends StatelessWidget {
                     label: 'الأحاديث',
                     onTap: () => _navigateToTab(context, 1),
                   ),
+                  DrawerItem(
+                    icon: Icons.auto_stories_rounded,
+                    label: 'الاذكار',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return AzkarScreenNew();
+                        },
+                      ),
+                    ),
+                  ),
+                  // new :
+                  DrawerItem(
+                    icon: Icons.auto_stories_rounded,
+                    label: 'اسماء الله الحسنى',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NamesOfAllahScreen();
+                        },
+                      ),
+                    ),
+                  ),
+                  // AzkarScreenNew
                   const Divider(height: 24, indent: 16, endIndent: 16),
+
+                  Consumer<ThemeController>(
+                    builder: (context, theme, _) => DrawerItem(
+                      icon: theme.isDark ? Icons.dark_mode : Icons.light_mode,
+                      label: 'تبديل الوضع',
+                      trailing: Switch(
+                        value: theme.isDark,
+                        onChanged: theme.toggle,
+                      ),
+                      onTap: () => theme.toggle(!theme.isDark),
+                    ),
+                  ),
+                  DrawerItem(
+                    icon: Icons.star_rate_rounded,
+                    label: 'المصحف الشريف',
+                    onTap: () {
+                      _pushPage(context, const MushafScreen());
+                    },
+                  ),
                   DrawerItem(
                     icon: Icons.star_rate_rounded,
                     label: 'تقييم التطبيق',
@@ -82,15 +130,17 @@ class DrawerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: MediaQuery.sizeOf(context).width,
       padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [
-            AppColors.primaryColor,
-            AppColors.primaryColor.withValues(alpha: 0.85),
+            context.palette.topBar,
+            context.palette.topBar.withValues(alpha: 0.85),
+            // AppColors.primaryColor,
+            // AppColors.primaryColor.withValues(alpha: 0.85),
           ],
         ),
       ),
@@ -131,11 +181,13 @@ class DrawerItem extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
+    this.trailing,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
